@@ -120,6 +120,7 @@
   .arch::after{content:""; position:absolute; left:0; right:0; bottom:0; height:17%; background:linear-gradient(var(--floor-1),var(--floor-2)); border-top:1px solid var(--line-2)}
   .arch svg.bq{position:absolute; left:16%; right:16%; bottom:6%; width:68%; height:auto; z-index:1}
   .arch .cat{position:absolute; bottom:3%; width:30%; z-index:2}
+  .arch .cat .bubble{white-space:normal; width:max-content; max-width:min(210px,58vw); text-align:center; line-height:1.3}
   .arch .cat.tux{left:4%} .arch .cat.tabby{right:4%}
   @media (max-width:900px){ .arch{justify-self:center; max-width:400px} }
 
@@ -1329,13 +1330,18 @@ document.title = 'For my Sky 🌸';
 $('#footer').textContent = CONFIG.footer;
 initCats(); drawStudio(); syncSw(); drawGarden();
 renderBouquet($('#heroSvg'), { wrap: 3, ribbon: 0, stems: ['sunflower', 'rose', 'sampaguita', 'camellia', 'lisianthus', 'waxflower', 'rose'].map((t, i) => ({ id: i, t, x: SLOTS[i][0], y: SLOTS[i][1], sc: SLOTS[i][2] })) }, { sort: true });
-setTimeout(() => {
+// Greet mommy only once the cats are actually on screen (on a phone they sit below the fold)
+function greetMommy() {
   const [maze, katsu] = $$('.arch .cat');
-  catAct(katsu, 'hop'); catSay(katsu, 'Welcome to your garden, mommy! 🌷', 3800);
-  setTimeout(() => { catAct(maze, 'hop'); catSay(maze, '…we kept it pretty for you.', 3800); }, 1300);
-  setTimeout(() => { katsu.classList.add('happy'); maze.classList.add('happy'); }, 600);
-  setTimeout(() => { katsu.classList.remove('happy'); maze.classList.remove('happy'); }, 5200);
-}, 1100);
+  catAct(katsu, 'hop'); catSay(katsu, 'Welcome to your garden, mommy! 🌷', 3600);
+  setTimeout(() => { catAct(maze, 'hop'); catSay(maze, '…we kept it pretty for you.', 3800); }, 3900);
+  katsu.classList.add('happy'); maze.classList.add('happy');
+  setTimeout(() => { katsu.classList.remove('happy'); maze.classList.remove('happy'); }, 7800);
+}
+const greetIO = new IntersectionObserver(es => {
+  if (es.some(e => e.isIntersecting)) { greetIO.disconnect(); setTimeout(greetMommy, 700); }
+}, { threshold: 0.75 });
+greetIO.observe($('.arch'));
 </script>
 </body>
 </html>
