@@ -475,7 +475,7 @@
 
       <div class="panel">
         <div class="panel-block">
-          <div class="block-head"><h3>Pick your blooms</h3><span id="stemCount">0 of 20 stems</span></div>
+          <div class="block-head"><h3>Pick your blooms</h3><span id="stemCount">0 stems</span></div>
           <div class="shelf-wrap"><div class="shelf" id="shelf"></div></div>
           <div class="about" id="about"><p>Tap a flower to see what it means.</p></div>
         </div>
@@ -768,7 +768,7 @@ const FBY = Object.fromEntries(FLOWERS.map(f => [f.k, f]));
 const WRAPS = ['#dcb48c', '#f6c9cf', '#bcd8f3', '#f4ece0', '#cfe3c6'];
 const RIBBONS = ['#c2185b', '#ffffff', '#6d4c9f', '#d4a017', '#2f6f8f'];
 const SLOTS = [[200, 205, 1.05], [148, 232, 1], [252, 232, 1], [200, 140, .95], [138, 168, .9], [262, 168, .9], [96, 228, .85], [304, 228, .85], [200, 270, .95], [165, 105, .8], [235, 105, .8], [118, 280, .8], [282, 280, .8], [80, 175, .75], [320, 175, .75], [200, 70, .75], [120, 125, .72], [280, 125, .72], [60, 245, .72], [340, 245, .72]];
-const MAX_STEMS = 20;
+const MAX_STEMS = Infinity; // no limit
 
 /* ---------- helpers ---------- */
 const $ = s => document.querySelector(s);
@@ -935,7 +935,7 @@ const ICON = {
 $('#voiceBtn').innerHTML = ICON.play; $('#playBtn').innerHTML = ICON.play;
 function drawStudio(popId) {
   renderBouquet(sSvg, studio, { popId, empty: 'tap a flower to begin ✿' });
-  $('#stemCount').textContent = `${studio.stems.length} of 20 stems`;
+  $('#stemCount').textContent = `${studio.stems.length} ${studio.stems.length === 1 ? 'stem' : 'stems'}`;
   $$('.fl').forEach(c => {
     const n = studio.stems.filter(s => s.t === c.dataset.k).length;
     let el = c.querySelector('.count');
@@ -961,7 +961,7 @@ function addFlower(k) {
   if (studio.stems.length >= MAX_STEMS) { toast(`That’s a full bouquet! ${MAX_STEMS} is the max 🌸`); return; }
   snapshot();
   const free = SLOTS.find(([x, y]) => !studio.stems.some(s => Math.hypot(s.x - x, s.y - y) < 22));
-  const [x, y, sc] = free || [rand(90, 310), rand(110, 280), rand(.8, 1)];
+  const [x, y, sc] = free || [rand(60, 340), rand(70, 300), rand(.72, .95)];
   const id = studio.nextId++;
   studio.stems.push({ id, t: k, x, y, sc });
   drawStudio(id); showAbout(FBY[k]); studioCatReact('add'); saveStudio();
