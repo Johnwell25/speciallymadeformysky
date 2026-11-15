@@ -628,8 +628,8 @@ const CONFIG = {
     file: 'someday.mp3',         // audio file next to index.html
   },
 
-  // Your photos (in the photos folder). They show while the song plays, in this order.
-  photos: ['photo-06.jpg', 'photo-02.jpg', 'photo-14.jpg', 'photo-03.jpg', 'photo-11.jpg', 'photo-13.jpg', 'photo-07.jpg', 'photo-08.jpg', 'photo-15.jpg', 'photo-04.jpg', 'photo-09.jpg', 'photo-16.jpg', 'photo-10.jpg', 'photo-12.jpg', 'photo-01.jpg', 'photo-05.jpg'].map(f => 'photos/' + f),
+  // Your photos (next to index.html, no folder). They show while the song plays, in this order.
+  photos: ['photo-06.jpg', 'photo-02.jpg', 'photo-14.jpg', 'photo-03.jpg', 'photo-11.jpg', 'photo-13.jpg', 'photo-07.jpg', 'photo-08.jpg', 'photo-15.jpg', 'photo-04.jpg', 'photo-09.jpg', 'photo-16.jpg', 'photo-10.jpg', 'photo-12.jpg', 'photo-01.jpg', 'photo-05.jpg'],
   photoSeconds: 6,
 
   // The cats' names (leave '' to hide the name tags)
@@ -1156,7 +1156,12 @@ const cards = PH.map((src, i) => {
   f.querySelector('img').dataset.src = src;
   memStage.appendChild(f); return f;
 });
-const loadImg = i => { const img = cards[(i + PH.length) % PH.length].querySelector('img'); if (!img.src) img.src = img.dataset.src; };
+const loadImg = i => {
+  const img = cards[(i + PH.length) % PH.length].querySelector('img');
+  if (img.src) return;
+  img.onerror = () => { if (!img.dataset.retry) { img.dataset.retry = 1; img.src = 'photos/' + img.dataset.src; } };
+  img.src = img.dataset.src;
+};
 function showPhoto(i) {
   const n = PH.length; memIdx = (i + n) % n;
   cards.forEach((c, k) => {
